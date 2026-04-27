@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>大白话线性回归 | 3分钟彻底看懂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #fef8ef;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 2rem 1rem;
+            color: #2d3e2b;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #c46b2b, #e8892f);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .header p {
+            color: #b45f2b;
+            font-size: 1rem;
+        }
+        .card {
+            background: white;
+            border-radius: 1.8rem;
+            padding: 1.4rem 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+            border: 1px solid #ffe0b5;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: #c46b2b;
+            border-left: 5px solid #f3a712;
+            padding-left: 0.8rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem;
+            color: #b45f2b;
+        }
+        .highlight {
+            background: #fff3e0;
+            padding: 0.1rem 0.3rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .code-block {
+            background: #1e2f3e;
+            color: #e3f0f5;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .tip {
+            background: #eef4fa;
+            border-left: 4px solid #f3a712;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .interview-q {
+            background: #fef5e3;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+        }
+        .interview-q strong {
+            color: #c46b2b;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #b8845c;
+            margin-top: 2rem;
+            border-top: 1px solid #ffe0b5;
+            padding-top: 1rem;
+        }
+        @media (max-width: 650px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .card { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📈 大白话线性回归</h1>
+        <p>拒绝数学焦虑 · 3分钟彻底看懂</p>
+    </div>
+
+    <!-- 1. 核心思想：画一条线 -->
+    <div class="card">
+        <h2>🤔 线性回归在干啥？一句话：画一条最佳直线</h2>
+        <p>给你一堆点（比如房子的面积和价格），线回归要做的就是找到一条直线，让这些点尽量靠近这条线。这样以后你给一个面积，就能用这条线猜出大概价格。</p>
+        <div class="tip">
+            💡 <strong>生活类比</strong>：就像你小时候学“身高-体重”规律，虽然每个人不一样，但你大概能画条线，身高越高一般越重。线性回归就是让机器学会画这条线。
+        </div>
+        <div class="code-block">
+            # 伪代码感受一下
+            # 输入：房子面积 x，真实价格 y
+            # 模型：价格 = w * 面积 + b
+            # 训练：找最好的 w 和 b，让预测尽量准
+        </div>
+    </div>
+
+    <!-- 2. 数学长什么样？别怕，只有加减乘除 -->
+    <div class="card">
+        <h2>📐 数学公式？其实就是 <span class="highlight">y = kx + b</span></h2>
+        <p>没错，就是初中数学！<strong>y = w·x + b</strong>（w 是斜率，b 是截距）。</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+            <li><strong>x</strong>：特征（面积、年份…）</li>
+            <li><strong>y</strong>：要预测的值（价格）</li>
+            <li><strong>w</strong>：权重（每增加一个面积，价格涨多少）</li>
+            <li><strong>b</strong>：偏置（房子基础价）</li>
+        </ul>
+        <p><strong>多特征呢？</strong> 就是 y = w₁x₁ + w₂x₂ + … + b，还是一根“直线”在高维空间的推广。</p>
+        <div class="tip">
+            ✅ 记住：线性回归假设输入和输出是<span class="highlight">线性关系</span>（也就是成比例变化）。
+        </div>
+    </div>
+
+    <!-- 3. 怎么找到最好的那条线？损失函数 + 梯度下降 -->
+    <div class="card">
+        <h2>🎯 怎么“学”出线？—— 损失函数 & 梯度下降</h2>
+        <p><strong>损失函数（均方误差 MSE）</strong>：就是把预测值和真实值的差距平方再平均。差距越小，线越好。</p>
+        <div class="code-block">
+            损失 = (预测₁ - 真实₁)² + (预测₂ - 真实₂)² + … 再取平均
+        </div>
+        <p><strong>梯度下降</strong>：就像一个蒙眼下山的人，每次试探哪个方向使得损失变小，就迈一小步。反复迭代，直到找到最低点（最优线）。</p>
+        <div class="tip">
+            🔁 面试官常问：为什么用平方而不是绝对值？ → 平方放大大误差，对异常值更敏感，且可导，方便数学优化。
+        </div>
+    </div>
+
+    <!-- 4. 项目应用场景 -->
+    <div class="card">
+        <h2>🏭 实际项目用在哪？【接地气案例】</h2>
+        <div class="grid-2">
+            <div><strong>🏠 房价预测</strong><br>面积、卧室数 → 预估总价</div>
+            <div><strong>📈 销售预测</strong><br>广告花费 → 下个月销量</div>
+            <div><strong>⚡ 趋势分析</strong><br>年份 → 销售额增长趋势</div>
+            <div><strong>🩺 医学</strong><br>药物剂量 → 血压下降值</div>
+        </div>
+        <div class="code-block">
+            # 使用 sklearn 一行代码搞定
+            from sklearn.linear_model import LinearRegression
+            model = LinearRegression()
+            model.fit(X_train, y_train)
+            pred = model.predict(X_test)
+        </div>
+        <div class="tip">
+            💡 注意：线性回归对异常值很敏感，实际项目中常先处理异常点，也可用正则化（岭回归、Lasso）防止过拟合。
+        </div>
+    </div>
+
+    <!-- 5. 面试高频考点 -->
+    <div class="card">
+        <h2>🎤 面试必问考点（背下来就能过）</h2>
+
+        <div class="interview-q">
+            <strong>Q1：线性回归的假设是什么？</strong><br>
+            → ① 线性关系；② 误差独立同分布（正态分布）；③ 无多重共线性（特征之间不高度相关）。
+        </div>
+        <div class="interview-q">
+            <strong>Q2：怎么评估回归模型好坏？</strong><br>
+            → <strong>R² (决定系数)</strong>：模型解释了数据多少变异性，越接近1越好。<br>
+            → <strong>MSE / MAE / RMSE</strong>：预测误差绝对值/平方根。
+        </div>
+        <div class="interview-q">
+            <strong>Q3：线性回归 vs 逻辑回归的区别？</strong><br>
+            → 线性回归预测连续值，逻辑回归预测概率（分类）。逻辑回归在线性回归输出套上 sigmoid 函数。
+        </div>
+        <div class="interview-q">
+            <strong>Q4：过拟合怎么办？</strong><br>
+            → 正则化：岭回归（L2） + Lasso（L1）；或增加数据量、减少特征。
+        </div>
+        <div class="interview-q">
+            <strong>Q5：梯度下降调参？</strong><br>
+            → 学习率太大不收敛，太小太慢；需要做特征缩放（归一化）加速收敛。
+        </div>
+    </div>
+
+    <!-- 6. 手写代码思路（不要求数学推导） -->
+    <div class="card">
+        <h2>🧠 面试手撕线性回归？不慌，写个类</h2>
+        <div class="code-block">
+            import numpy as np
+            class LinearRegressionGD:
+                def __init__(self, lr=0.01, epochs=1000):
+                    self.lr = lr
+                    self.epochs = epochs
+                    self.w = None
+                    self.b = None
+                def fit(self, X, y):
+                    n_samples, n_features = X.shape
+                    self.w = np.zeros(n_features)
+                    self.b = 0
+                    for _ in range(self.epochs):
+                        y_pred = X @ self.w + self.b
+                        dw = (1/n_samples) * X.T @ (y_pred - y)
+                        db = (1/n_samples) * np.sum(y_pred - y)
+                        self.w -= self.lr * dw
+                        self.b -= self.lr * db
+                def predict(self, X):
+                    return X @ self.w + self.b
+        </div>
+        <p>面试官问你原理：就是不断调整 w 和 b，让损失变小。上面代码展示了最核心的梯度下降更新。</p>
+    </div>
+
+    <!-- 7. 避坑指南 -->
+    <div class="card">
+        <h2>⚠️ 新手常踩的坑</h2>
+        <ul style="margin-left: 1.5rem;">
+            <li><strong>不标准化特征</strong>：范围大的特征会主导梯度更新 → 做 StandardScaler。</li>
+            <li><strong>忽略多重共线性</strong>：特征高度相关会使模型不稳定 → 用相关性矩阵检查或使用岭回归。</li>
+            <li><strong>数据泄露</strong>：把未来信息放进训练 → 划分时间序列时注意时序。</li>
+            <li><strong>认为线性回归永远好使</strong>：非线性关系时要用多项式回归或树模型。</li>
+        </ul>
+        <div class="tip">
+            🧪 小实验：用 sklearn 的 make_regression 生成数据，拟合后画图看残差，直观感受模型好坏。
+        </div>
+    </div>
+
+    <!-- 8. 总结金句 -->
+    <div class="card">
+        <h2>✅ 一句话总结</h2>
+        <p style="font-size: 1.1rem; font-weight: 500;">线性回归 = 找一条直线让所有点离它最近 → 用损失函数衡量 → 梯度下降优化 → 预测新数据。</p>
+        <p>它是机器学习的“hello world”，简单但深刻。面试时讲出假设、评估、优缺点，就能过关。</p>
+    </div>
+
+    <footer>
+        🔥 拒绝焦虑 · 理解思想就能灵活应用。祝你面试顺利！
+    </footer>
+</div>
+</body>
+</html>

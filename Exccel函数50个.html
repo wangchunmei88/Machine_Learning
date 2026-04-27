@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>50个Excel常用函数速查表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f2f6fc;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 2rem 1rem;
+            color: #1a3e50;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #1b6b87, #2e8a99);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .header p {
+            color: #5b8c9e;
+            margin-top: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.03);
+            border: 1px solid #dce9f0;
+            transition: 0.2s;
+        }
+        .card:hover {
+            border-color: #9bc4d0;
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.08);
+        }
+        .func-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f6e8c;
+            border-left: 4px solid #2e8a99;
+            padding-left: 0.6rem;
+            margin-bottom: 0.4rem;
+        }
+        .func-desc {
+            font-size: 0.85rem;
+            color: #4a6a7f;
+            margin-bottom: 0.6rem;
+            line-height: 1.4;
+        }
+        .func-example {
+            background: #eef4fa;
+            padding: 0.5rem 0.7rem;
+            border-radius: 0.8rem;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #0f4b5e;
+            margin: 0.6rem 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .func-note {
+            font-size: 0.75rem;
+            color: #7a9cae;
+            margin-top: 0.3rem;
+        }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            color: #8aaebd;
+            border-top: 1px solid #cde3ea;
+            padding-top: 1rem;
+        }
+        @media (max-width: 650px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📊 50个Excel常用函数速查</h1>
+        <p>数学 · 统计 · 查找 · 文本 · 日期 · 逻辑</p>
+    </div>
+    <div class="grid" id="functionsGrid"></div>
+    <footer>💡 点击函数可无操作，仅作速查 | 所有示例基于常见场景</footer>
+</div>
+
+<script>
+    const functions = [
+        { name: "SUM", desc: "计算范围内所有数值的总和。", example: "=SUM(A1:A10)", note: "例：若A1:A10为1到10，结果为55。" },
+        { name: "SUMIF", desc: "计算满足指定条件的单元格之和。", example: "=SUMIF(A1:A10,\">5\")", note: "例：A1:A10为1-10，条件>5得40（6~10和）。" },
+        { name: "SUMIFS", desc: "多条件求和。", example: "=SUMIFS(C:C, A:A,\"苹果\", B:B,\">10\")", note: "对C列求和，A列为“苹果”且B列>10。" },
+        { name: "AVERAGE", desc: "返回参数的平均值。", example: "=AVERAGE(A1:A10)", note: "忽略空白和文本。" },
+        { name: "AVERAGEIF", desc: "对满足条件的单元格求平均。", example: "=AVERAGEIF(B2:B20,\">=60\")", note: "成绩≥60的平均分。" },
+        { name: "AVERAGEIFS", desc: "多条件求平均。", example: "=AVERAGEIFS(D:D, A:A,\"销售部\", B:B,\">500\")", note: "销售部且销售额>500的平均值。" },
+        { name: "COUNT", desc: "计算包含数字的单元格个数。", example: "=COUNT(A1:A10)", note: "只计数数字。" },
+        { name: "COUNTA", desc: "计算非空单元格个数。", example: "=COUNTA(A1:A10)", note: "文本、数字、错误值都算。" },
+        { name: "COUNTIF", desc: "统计满足条件单元格个数。", example: "=COUNTIF(A:A,\"完成\")", note: "统计列中“完成”的数量。" },
+        { name: "COUNTIFS", desc: "多条件计数。", example: "=COUNTIFS(B:B,\">80\", C:C,\"优秀\")", note: "分数>80且等级优秀的个数。" },
+        { name: "MAX", desc: "返回最大值。", example: "=MAX(A1:A10)", note: "返回区域中的最大值。" },
+        { name: "MIN", desc: "返回最小值。", example: "=MIN(A1:A10)", note: "返回区域中的最小值。" },
+        { name: "LARGE", desc: "返回第k个最大值。", example: "=LARGE(A1:A10,2)", note: "返回第二大的数值。" },
+        { name: "SMALL", desc: "返回第k个最小值。", example: "=SMALL(A1:A10,2)", note: "返回第二小的数值。" },
+        { name: "RANK", desc: "返回数值的排名（并列占用名次）。", example: "=RANK(85, A1:A10,0)", note: "降序排名。" },
+        { name: "IF", desc: "逻辑判断，返回不同值。", example: "=IF(A1>=60,\"及格\",\"不及格\")", note: "条件为真返回前者。" },
+        { name: "IFERROR", desc: "如果公式错误，返回指定值。", example: "=IFERROR(A1/B1,0)", note: "错误时返回0。" },
+        { name: "AND", desc: "所有条件为真时返回TRUE。", example: "=AND(A1>10, B1<20)", note: "两个条件都满足为真。" },
+        { name: "OR", desc: "任一条件为真时返回TRUE。", example: "=OR(A1=\"是\", B1=\"是\")", note: "只要一个成立即为真。" },
+        { name: "NOT", desc: "逻辑取反。", example: "=NOT(A1>10)", note: "若A1>10为假则返回TRUE。" },
+        { name: "VLOOKUP", desc: "垂直查找匹配值。", example: "=VLOOKUP(E2, A:C, 3, FALSE)", note: "精确查找E2在A:C的第3列。" },
+        { name: "HLOOKUP", desc: "水平查找匹配值。", example: "=HLOOKUP(\"销售\", B1:E5, 4, FALSE)", note: "在第一行找到“销售”返回第4行对应列。" },
+        { name: "XLOOKUP", desc: "灵活查找（新版Excel）。", example: "=XLOOKUP(F2, A:A, B:B)", note: "查找F2对应B列值。" },
+        { name: "INDEX", desc: "根据行列号返回区域的值。", example: "=INDEX(A1:C5, 3, 2)", note: "第3行第2列的值。" },
+        { name: "MATCH", desc: "返回查找值在区域中的位置。", example: "=MATCH(\"李华\", A:A, 0)", note: "精确匹配返回行号。" },
+        { name: "CHOOSE", desc: "根据索引返回列表中的值。", example: "=CHOOSE(2, \"A\",\"B\",\"C\")", note: "返回第二个值“B”。" },
+        { name: "CONCATENATE", desc: "合并多个文本。", example: "=CONCATENATE(A1,\" \",B1)", note: "可改用 & 或 CONCAT。" },
+        { name: "TEXT", desc: "将数字转换为指定格式文本。", example: "=TEXT(A1,\"yyyy-mm-dd\")", note: "日期格式化。" },
+        { name: "LEFT", desc: "从左侧提取指定字符数。", example: "=LEFT(A1,4)", note: "取前4个字符。" },
+        { name: "RIGHT", desc: "从右侧提取指定字符数。", example: "=RIGHT(A1,3)", note: "取后3个字符。" },
+        { name: "MID", desc: "从指定位置提取指定长度字符。", example: "=MID(A1,3,5)", note: "从第3位起取5个字符。" },
+        { name: "LEN", desc: "返回字符串长度。", example: "=LEN(A1)", note: "空格也算。" },
+        { name: "TRIM", desc: "删除首尾多余空格，保留单词间单个空格。", example: "=TRIM(A1)", note: "清理文本格式。" },
+        { name: "SUBSTITUTE", desc: "替换指定字符串。", example: "=SUBSTITUTE(A1,\"旧\",\"新\")", note: "全部替换。" },
+        { name: "UPPER", desc: "转换为大写。", example: "=UPPER(A1)", note: "字母全大写。" },
+        { name: "LOWER", desc: "转换为小写。", example: "=LOWER(A1)", note: "字母全小写。" },
+        { name: "PROPER", desc: "首字母大写。", example: "=PROPER(A1)", note: "每个单词首字母大写。" },
+        { name: "DATE", desc: "根据年月日返回日期。", example: "=DATE(2025,12,31)", note: "返回2025-12-31。" },
+        { name: "TODAY", desc: "返回当前日期。", example: "=TODAY()", note: "动态更新。" },
+        { name: "NOW", desc: "返回当前日期和时间。", example: "=NOW()", note: "动态更新。" },
+        { name: "DATEDIF", desc: "计算两个日期之间的差值。", example: "=DATEDIF(A1,B1,\"y\")", note: "y年, m月, d日。" },
+        { name: "EDATE", desc: "返回几个月后的日期。", example: "=EDATE(A1,3)", note: "3个月后。" },
+        { name: "EOMONTH", desc: "返回月末日期。", example: "=EOMONTH(A1,0)", note: "当月最后一天。" },
+        { name: "WEEKDAY", desc: "返回星期几（数字）。", example: "=WEEKDAY(A1,2)", note: "周一=1..." },
+        { name: "NETWORKDAYS", desc: "计算两个日期之间工作天数。", example: "=NETWORKDAYS(A1,B1)", note: "不含周末。" },
+        { name: "WORKDAY", desc: "返回工作日后的日期。", example: "=WORKDAY(A1,10)", note: "10个工作日后。" },
+        { name: "INT", desc: "向下取整。", example: "=INT(3.9)", note: "结果为3。" },
+        { name: "ROUND", desc: "四舍五入到指定位数。", example: "=ROUND(3.14159,2)", note: "3.14。" },
+        { name: "ROUNDUP", desc: "向上舍入。", example: "=ROUNDUP(3.1,0)", note: "4。" },
+        { name: "ROUNDDOWN", desc: "向下舍入。", example: "=ROUNDDOWN(3.9,0)", note: "3。" },
+        { name: "ABS", desc: "返回绝对值。", example: "=ABS(-5)", note: "5。" }
+    ];
+    const grid = document.getElementById('functionsGrid');
+    functions.forEach((func, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="func-name">${idx+1}. ${func.name}</div>
+            <div class="func-desc">${func.desc}</div>
+            <div class="func-example">${func.example}</div>
+            <div class="func-note">📘 ${func.note}</div>
+        `;
+        grid.appendChild(card);
+    });
+</script>
+</body>
+</html>
